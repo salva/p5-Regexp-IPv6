@@ -1,0 +1,6 @@
+Revision history for Perl extension Regexp::IPv6.
+
+0.01  Sat Jan 24 13:03:13 2009
+	- original version; created by h2xs 1.23 with options
+		-AXn Regexp::IPv6
+
