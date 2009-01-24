@@ -1,10 +1,10 @@
 --- #YAML:1.0
 name:                Regexp-IPv6
-version:             0.01
-abstract:            Regular expression for IPv6 addresses
+version:             0.02
+abstract:            ~
 license:             ~
 author:              
-    - salva <salva@>
+    - Salvador Fandino <sfandino@yahoo.com>
 generated_by:        ExtUtils::MakeMaker version 6.42
 distribution_type:   module
 requires:     
