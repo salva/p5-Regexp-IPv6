@@ -9,20 +9,24 @@ require Exporter;
 our @ISA = qw(Exporter);
 our @EXPORT_OK = qw($IPv6_re);
 
-my $IPv4 = "(?:(?:25[0-5]|2[0-4][0-9]|[0-1]?[0-9]{1,2})[.](?:25[0-5]|2[0-4][0-9]|[0-1]?[0-9]{1,2})[.](?:25[0-5]|2[0-4][0-9]|[0-1]?[0-9]{1,2})[.](?:25[0-5]|2[0-4][0-9]|[0-1]?[0-9]{1,2}))";
-my $G = "[\\da-f]{1,4}";
-
+my $IPv4 = "((25[0-5]|2[0-4][0-9]|[0-1]?[0-9]{1,2})[.](25[0-5]|2[0-4][0-9]|[0-1]?[0-9]{1,2})[.](25[0-5]|2[0-4][0-9]|[0-1]?[0-9]{1,2})[.](25[0-5]|2[0-4][0-9]|[0-1]?[0-9]{1,2}))";
+my $G = "[0-9a-fA-F]{1,4}";
+#$IPv4 = 'p';
+#$G = 'x';
 my @tail = ( ":",
-	     ":(?:$G)?",
-	     "(?:(?::$G){1,2}|:$IPv4?)",
-	     "(?::$G)?(?:(?::$G){1,2}|:$IPv4?)",
-	     "(?::$G){0,2}(?:(?::$G){1,2}|:$IPv4?)",
-	     "(?::$G){0,3}(?:(?::$G){1,2}|:$IPv4?)",
-	     "(?::$G){0,4}(?:(?::$G){1,2}|:$IPv4?)" );
+	     "(:($G)?|$IPv4)",
+             ":($IPv4|$G(:$G)?|)",
+             "((:$G)?:($IPv4|$G(:$G)?)|:)",
+	     "((:$G){0,2}((:$G){1,2}|:$IPv4)|:)",
+	     "((:$G){0,3}((:$G){1,2}|:$IPv4)|:)",
+	     "((:$G){0,4}((:$G){1,2}|:$IPv4)|:)" );
 
 our $IPv6_re = $G;
-$IPv6_re = "$G:(?:$IPv6_re|$_)" for @tail;
-$IPv6_re = qr/:(?::$G){0,5}(?:(?::$G){1,2}|:$IPv4)|$IPv6_re/i;
+$IPv6_re = "$G:($IPv6_re|$_)" for @tail;
+print "$IPv6_re\n";
+$IPv6_re = qq/:(:$G){0,5}((:$G){1,2}|:$IPv4)|$IPv6_re/;
+$IPv6_re =~ s/\(/(?:/g;
+$IPv6_re = qr/$IPv6_re/;
 
 1;
 __END__
@@ -41,15 +45,15 @@ Regexp::IPv6 - Regular expression for IPv6 addresses
 
 This module exports the $IPv6_re regular expression that matches any
 valid IPv6 address as described in "RFC 2373 - 2.2 Text Representation
-of Addresses" but C<::>. Also any string not compliant with the RFC is
-rejected (otherwise, you have found a bug on the regexp, report it,
-please!).
+of Addresses" but C<::>. Any string not compliant with such RFC will
+be rejected.
 
-If you want to match full strings, use C</^$IPv6_re$/>.
+To match full strings use C</^$IPv6_re$/>.
 
 =head1 COPYRIGHT AND LICENSE
 
-Copyright (C) 2009 by Salvador FandiE<ntilde>o (sfandino@yahoo.com)
+Copyright (C) 2009, 2010 by Salvador FandiE<ntilde>o
+(sfandino@yahoo.com)
 
 This library is free software; you can redistribute it and/or modify
 it under the same terms as Perl itself, either Perl version 5.10.0 or,
