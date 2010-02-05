@@ -24,7 +24,7 @@ while (<DATA>) {
 
     if ($good) {
 	ok($_ =~ $re, "good $_");
-    TODO: if (0) {
+    TODO: if (1) {
             local $TODO = "maximize match not implemented yet";
             ok(($_ =~ $nare and $1 eq $_), "full match $_")
                 or diag("text: $_, matched: $1");
